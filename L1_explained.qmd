@@ -2,12 +2,14 @@
 title: "Почему L1 (Lasso) регуляризация отбирает признаки?"
 date: "now"
 lang: ru
+toc: true
 format:
+  # ipynb: default
   html:
     code-fold: true
 jupyter: python3
-execute:
-  eval: false
+# execute:
+#   eval: false
 ---
 
 # L1 и L2 регуляризация
@@ -74,8 +76,10 @@ $$w_i := w_i - \lambda (\frac{\partial Loss}{\partial w_i} +  \alpha \cdot \text
 # %% Generate data
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.linear_model import LinearRegression, Lasso
 
+sns.set()
 
 np.random.seed(42)
 
