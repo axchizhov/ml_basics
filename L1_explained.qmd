@@ -1,5 +1,5 @@
 ---
-title: "Почему L1 (Lasso) регуляризация отбирает признаки?"
+title: "Почему L1 (Lasso) регуляризация отбирает признаки? От теории к практике"
 date: "now"
 lang: ru
 toc: true
@@ -67,9 +67,9 @@ $$w_i := w_i - \lambda (\frac{\partial Loss}{\partial w_i} +  \alpha \cdot \text
 ## Генеририруем простенький датасет
 
 * 50 объектов
+* 1 признак с целевой переменной + немного шума
 * 10 признаков со случайным шумом
 * 3 признака с нулем
-* 1 признак с целевой переменной + немного шума
 * последний признак константа с 1 (bias) 
 
 ```{python}
@@ -99,17 +99,14 @@ print(X[0])
 ## Реализуем градиентный спуск для L1
 
 ```{python}
+#| code-fold: false
 
 from sklearn.metrics import mean_squared_error
 
-n_samples, n_features = X.shape
-
-np.random.seed(42)
-
 class LinearRegressionNaiveL1:
-    def __init__(self, learning_rate=1e-5, iterations=150, alpha=5):
+    def __init__(self, learning_rate, epochs, alpha, n_features):
         self.learning_rate = learning_rate
-        self.iterations = iterations
+        self.epochs = epochs
         self.alpha = alpha  # regularization parameter
         self.weights = np.random.randn(n_features, 1) * 0.001
         self.bias = 0
@@ -118,8 +115,7 @@ class LinearRegressionNaiveL1:
     def fit(self, X, y):
         n_samples, n_features = X.shape
 
-        for _ in range(self.iterations):
-            # Compute predictions
+        for _ in range(self.epochs):
             y_pred = self.predict(X)
 
             # Compute gradients
@@ -136,55 +132,50 @@ class LinearRegressionNaiveL1:
 
     def predict(self, X):
         return X @ self.weights + self.bias
+
+
+n_samples, n_features = X.shape
+learning_rate = 1e-5
+epochs = 150
+alpha = 5
+
+model = LinearRegressionNaiveL1(learning_rate=learning_rate, epochs=epochs, alpha=alpha, n_features=n_features)
+model.fit(X, y)
 ```
 
-```{python}
 
-model = LinearRegressionNaiveL1()
-model.fit(X, y)
+## Итоги обучения
+
+По графику видно, что в процессе обучения кривая ошибок начала зацикливаться вокруг одного значения. Такой эффект как раз может давать колебание весов около нуля, которое мы интуитивно предполагали.
+
+
+```{python}
+#| label: fig-naive-loss
 
 plt.plot(model.loss_history)
 plt.xlabel('Iteration')
 plt.ylabel('Mean Squared Error')
 plt.title('Loss Change Over Iterations')
 plt.show()
+```
 
+Ну и уже ожидаемо, ни один вес в ноль не обратился:
 
+```{python}
 plt.bar(range(len(model.weights)), model.weights.flatten())
 plt.xlabel('Feature Index')
 plt.ylabel('Weight Value')
 plt.title('Weights')
 plt.show()
-
 ```
 
+Неужели нас все это время обманывали и Л1 регуляризация не отбирает признаки? Или все-таки что-то мы делаем не так?
 
+# Проверим, что общеупотребительное решение работает
 
+Возьмем Л1 из коробки (sklearn) и проверим, какой результат оно нам выдаст.
 
-
-
-
-
-
-
-
-
-
-
-
-# Проверим, что в  общеупотребительное решение, что работает
-
-От теории к практике. Как l1 и l2 работают в sklearn
-
-L1 регуляризация действительно полностью обнуляет часть весов модели, в отличии от L2 регуляризации.
-
-Мы можем это проверить, 
-
-## сгенерировать простой датасет
-
-мы знаем как он себя ведет
-
-дальше будем работать только с ним
+И тут все работает. Наш $\alpha = 10$ достаточно велик, чтобы обнулить все веса.
 
 ```{python}
 #| label: fig-sklearn-models
@@ -194,24 +185,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression, Lasso, Ridge
 
-# import warnings
-# warnings.filterwarnings('ignore', category=UserWarning, module='sklearn')
-
-
-# Generate synthetic data
-np.random.seed(42)
-X = np.random.randn(100, 10)
-y = X @ np.array([1.5, -2, 0, 0, 4.5, 0, 0, -3.5, 2, 0]) + np.random.randn(100)
-
 # Fit a linear regression model with L2 regularization
-lr = Ridge()
+lr = Ridge(max_iter=epochs)
 lr.fit(X, y)
-weights_lr = lr.coef_
+weights_lr = lr.coef_.flatten()
 
 # Fit a linear regression model with L1 regularization
-lasso = Lasso(alpha=0.1)
+lasso = Lasso(max_iter=epochs, alpha=alpha)
 lasso.fit(X, y)
-weights_lasso = lasso.coef_
+weights_lasso = lasso.coef_.flatten()
 
 # Plot the weights for comparison
 # plt.figure(figsize=(10, 5))
@@ -229,9 +211,9 @@ print("Ridge Regression Weights:\n", weights_lr)
 print("Lasso Regression Weights:\n", weights_lasso)
 ```
 
-# Л1 наивная реализация
 
-код
+# Правильная реализация Л1
+
 
 не работает... почему?
 
@@ -239,6 +221,10 @@ print("Lasso Regression Weights:\n", weights_lasso)
 1. коэффициэнты стратуеют с нуля (для линейной модели можно)
 2. используется модификация градиентного спуска
 3. ?
+
+код
+
+
 
 # Л1 тру реализация
 
