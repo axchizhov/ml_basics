@@ -8,8 +8,8 @@ format:
   html:
     code-fold: true
 jupyter: python3
-# execute:
-#   eval: false
+execute:
+  eval: false
 ---
 
 # L1 и L2 регуляризация
@@ -267,21 +267,6 @@ print("Lasso Regression Weights:\n", weights_lasso)
 > Еще плюсs и минусы
 
 
-
-
-
-
-
-# Л1 тру реализация
-
-дело не только в производной л1
-
-используется модификация градиентного спуска
-
-сам метод можно вывести через субградинеты, но это усложнение
-
-# Итоги
-
 Можно понять, что Л1 далеко не всегда является хорошей штукой
 
 
@@ -291,7 +276,7 @@ print("Lasso Regression Weights:\n", weights_lasso)
 Л1 можно объяснять через вероятностный механизм
 
 Обычно Л1 объясняют через вот эти графики, но мне оно не очевидно
-
+<!-- 
 ```{python}
 import numpy as np
 import matplotlib.pyplot as plt
@@ -463,4 +448,4 @@ ax.legend()
 plt.tight_layout()
 plt.show()
 
-```
+``` -->
