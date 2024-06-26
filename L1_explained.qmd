@@ -241,7 +241,71 @@ print("Lasso Regression Weights:\n", weights_lasso)
 
 ```{python}
 #| code-fold: false
-# TODO
+#| 
+class LinearRegressionTrueL1:
+    def __init__(self, learning_rate, epochs, alpha, n_features):
+        self.learning_rate = learning_rate
+        self.epochs = epochs
+        self.alpha = alpha  # regularization parameter
+        self.weights = np.random.randn(n_features, 1) * 0.001
+        self.bias = 0
+        self.loss_history = []
+    
+    def clip(self, weights):
+        alpha_scaled = self.learning_rate * self.alpha
+        
+        clipped_step = np.sign(weights) * np.minimum(np.abs(weights), alpha_scaled)
+        
+        weights -= clipped_step
+
+        return weights
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+
+        for _ in range(self.epochs):
+            y_pred = self.predict(X)
+
+            # Compute gradients
+            d_l1 = self.alpha * np.sign(self.weights)
+            d_weights = (1/(2*n_samples)) * (X.T @ (y_pred - y))
+            d_bias = (1/(2*n_samples)) * np.sum(y_pred - y)
+
+            # Update weights and bias
+            self.weights -= self.learning_rate * (d_weights + d_l1)
+            self.weights = self.clip(self.weights)
+            self.bias -= self.learning_rate * d_bias
+            
+            mse = mean_squared_error(y, y_pred)            
+            self.loss_history.append(mse)
+
+    def predict(self, X):
+        return X @ self.weights + self.bias
+```
+
+```{python}
+
+model = LinearRegressionTrueL1(learning_rate=learning_rate, epochs=epochs, alpha=0.5, n_features=n_features)
+
+model.fit(X, y)
+
+weights_my = model.weights.reshape(-1)
+print(f"My {model} Weights:\n{weights_my}")
+print(f"len weights:{len(weights_my)}")
+print(f"number of non-zero weights:{sum(weights_my != 0.)}")
+
+
+plt.figure(figsize=(10, 5))
+# plt.stem(weights_lr, linefmt="b-", markerfmt="bo", basefmt=" ", label="Linear Regression")
+# plt.stem(weights_lasso, linefmt="r-", markerfmt="rs", basefmt=" ", label="Lasso Regression")
+plt.stem(weights_my, linefmt="g-", markerfmt="x", basefmt=" ", label="My Lasso")
+plt.xlabel("Feature index")
+plt.ylabel("Weight value")
+plt.title("Comparison of Weights: Linear Regression vs Lasso Regression")
+plt.legend()
+plt.grid(True)
+plt.show()
+
 ```
 
 Ура, получилось.
