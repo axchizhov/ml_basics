@@ -6,3 +6,4 @@ matplotlib
 plotly
 jupyter
 seaborn
+pandas
