@@ -10,7 +10,7 @@ format:
     code-fold: true
 jupyter: python3
 execute:
-  eval: false
+  eval: true
 ---
 
 # Введение
@@ -34,11 +34,11 @@ $$ \text{MSE Loss}+ L_1 = \frac{1}{2n} ||Xw - y||_{2}^{2} + \alpha ||w||_1 $$
 
 $$ ||w||_1 = |w_1| + |w_2| + \ldots $$
 
-Далее считаем производные по весам:
+Для нахождения оптимальных весов нам, как обычно, потребуются градиенты:
 
 $$ \nabla_w \text{MSE Loss} = \frac{1}{n} X^T (Xw - y) $$
 
-$$ \frac{\partial L_1}{\partial w_i} = \alpha \cdot \text{sign}(w_i) $$
+$$ \nabla_w L_1 = \alpha \cdot \text{sign}(w) $$
 
 \begin{equation}
 \text{sign}(w_i) = \begin{cases} 
@@ -59,32 +59,7 @@ $$ \frac{\partial L_1}{\partial w_i} = \alpha \cdot \text{sign}(w_i) $$
 * 1 релевантный признак
 * 4 признака со случайным шумом
 
-
-
-
-
-
-На каждом шаге спуска обновлять веса будем так:
-
-$$w_i := w_i - \lambda (\frac{\partial \text{MSE Loss}}{\partial w_i} +  \alpha \cdot \text{sign}(w_i) ) $$
-
-Вообще, L1 просто константу добавляет/отнимает при градиентном спуске:
-
-
-
-
-
-
-
-Интуитивно, обнуляемые веса будут болтаться около ноля, но вот ровно в ноль попадать практически никогда не будут. Ну что ж, проверим интуицию на практике.
-
-## Генеририруем простенький датасет
-
-
-
 ```{python}
-# Generate data
-
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -92,6 +67,7 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import make_regression
 
 sns.set()
+np.set_printoptions(suppress=True)
 
 np.random.seed(42)
 
@@ -100,7 +76,7 @@ X, y = make_regression(n_samples=50, n_features=5, n_informative=1, noise=0.01, 
 y = y.reshape(-1, 1)
 
 # Convert to DataFrame
-data = pd.DataFrame(X, columns=[f'Feature_{i}' for i in range(X.shape[1])])
+data = pd.DataFrame(X, columns=[f'Feature {i}' for i in range(X.shape[1])])
 data['Target'] = y
 
 # Plot correlation plots
@@ -109,7 +85,10 @@ plt.show()
 ```
 
 
-## Реализуем градиентный спуск для L1
+Далее набросаем саму модель. Ее веса будем обновлять следующим образом:
+
+$$w_i := w_i - \lambda (\frac{\partial \text{MSE Loss}}{\partial w_i} +  \alpha \cdot \text{sign}(w_i) ) $$
+
 
 ```{python}
 #| code-fold: false
@@ -149,7 +128,7 @@ class LinearRegressionNaiveL1:
 
 
 n_samples, n_features = X.shape
-learning_rate = 1e-1
+learning_rate = 0.1
 epochs = 200
 alpha = 5
 
@@ -157,10 +136,9 @@ model = LinearRegressionNaiveL1(learning_rate=learning_rate, epochs=epochs, alph
 model.fit(X, y)
 ```
 
+## Результаты обучения
 
-## Итоги обучения
-
-Обучение прошло без проблем, модель показывает приличные прогнозы.
+Обучение прошло без проблем, модель даже показывает приличные прогнозы.
 
 ::: {layout-ncol=2 .column-page}
 
@@ -172,6 +150,7 @@ plt.xlabel('Iteration')
 plt.ylabel('Mean Squared Error')
 plt.title('Loss Change Over Iterations')
 plt.show()
+
 ```
 
 
@@ -189,23 +168,15 @@ plt.show()
 
 ```
 
-
 :::
 
-Модель правильно выцепила один релевантный признак и дала ему большой вес. Однако, ни один вес в ноль не обратился:
+Модель правильно выцепила релевантный признак и дала ему большой вес. Однако, ни один вес в ноль не обратился:
 
 ```{python}
-
 print(model.weights.flatten())
-
-# plt.bar(range(len(model.weights)), np.log(np.abs((model.weights.flatten()))))
-# plt.xlabel('Feature Index')
-# plt.ylabel('Log of Absolute Weight')
-# plt.title('Weights')
-# plt.show()
 ```
 
-Неужели нас все это время обманывали и Л1 регуляризация не отбирает признаки? Или все-таки что-то мы делаем не так?
+Окей, обычный градиентный спуск веса не обнуляет. Как быть?
 
 # Проверим, что общеупотребительное решение работает
 
