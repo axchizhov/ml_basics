@@ -61,7 +61,9 @@ $$ \mathbf{\nabla_w} L_1 = \alpha \cdot \text{sign}(\mathbf{w}) $$
 * 1 релевантный признак
 * 4 признака со случайным шумом
 
+
 ```{python}
+# | column: body-outset
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -77,12 +79,11 @@ np.random.seed(42)
 X, y = make_regression(n_samples=50, n_features=5, n_informative=1, noise=0.01, bias=1)
 y = y.reshape(-1, 1)
 
-# Convert to DataFrame
+# Plot correlation plots
 data = pd.DataFrame(X, columns=[f'Feature {i}' for i in range(X.shape[1])])
 data['Target'] = y
 
-# Plot correlation plots
-sns.pairplot(data, y_vars='Target', x_vars=data.columns[:-1], kind='reg')
+ax = sns.pairplot(data, y_vars='Target', x_vars=data.columns[:-1], kind='reg')
 plt.show()
 ```
 
@@ -145,26 +146,22 @@ model.fit(X, y)
 ::: {layout-ncol=2 .column-page}
 
 ```{python}
-#| label: fig-naive-loss
-
 plt.plot(model.loss_history)
 plt.xlabel('Iteration')
-plt.ylabel('Mean Squared Error')
+plt.ylabel('Loss')
 plt.title('Loss Change Over Iterations')
 plt.show()
-
 ```
 
 
 ```{python}
-
 y_pred = model.predict(X)
 
 plt.scatter(y, y_pred, color='blue', label='Predicted vs True')
 plt.plot([min(y), max(y)], [min(y), max(y)], color='red', linestyle='--', linewidth=2, label='Perfect Fit')
 plt.xlabel('True Values')
 plt.ylabel('Predicted Values')
-plt.title('Prediction Error vs True Values')
+plt.title('Predicted vs True Values')
 plt.legend()
 plt.show()
 
@@ -261,10 +258,9 @@ model.fit(X, y)
 ::: {layout-ncol=2 .column-page}
 
 ```{python}
-
 plt.plot(model.loss_history)
 plt.xlabel('Iteration')
-plt.ylabel('Mean Squared Error')
+plt.ylabel('Loss')
 plt.title('Loss Change Over Iterations')
 plt.show()
 
@@ -272,17 +268,15 @@ plt.show()
 
 
 ```{python}
-
 y_pred = model.predict(X)
 
 plt.scatter(y, y_pred, color='blue', label='Predicted vs True')
 plt.plot([min(y), max(y)], [min(y), max(y)], color='red', linestyle='--', linewidth=2, label='Perfect Fit')
 plt.xlabel('True Values')
 plt.ylabel('Predicted Values')
-plt.title('Prediction Error vs True Values')
+plt.title('Predicted vs True Values')
 plt.legend()
 plt.show()
-
 ```
 
 :::
