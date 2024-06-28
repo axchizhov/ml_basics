@@ -1,6 +1,6 @@
 ---
 title: "Под капотом L1 регуляризации"
-subtitle: "Почему она отбирает признаки? От теории к практике"
+subtitle: "Почему она отбирает признаки? Практика вместо теории"
 date: "now"
 lang: ru
 toc: true
@@ -130,7 +130,7 @@ class LinearRegressionNaiveL1:
 n_samples, n_features = X.shape
 learning_rate = 0.1
 epochs = 200
-alpha = 5
+alpha = 0.5
 
 model = LinearRegressionNaiveL1(learning_rate=learning_rate, epochs=epochs, alpha=alpha, n_features=n_features)
 model.fit(X, y)
@@ -180,21 +180,31 @@ print(model.weights.flatten())
 
 # Правильно спускаемся по градиенту {#sec-bottom-line}
 
-Тут можно углубиться в теорию оптимизаций выпуклых функций. Как вариант, с помощью метода проксимального градиента можно получить правильный алгоритм оптимизации. Но небанальные математические выкладки на самом деле приведут к весьма простомой эвристике.
+Нужный алгоритм можно найти в теории оптимизации выпуклых функций. Как вариант, с помощью метода проксимального градиента наша задача решается. Но небанальные математические выкладки на самом деле приведут к весьма простой эвристике.
 
-Итак, готовы? Ключевая идея Л1 регуляризации:
+Итак, готовы? 
 
 :::{.callout-note}
-## Ключевая идея Л1
+## Ключевая идея L1
 
-Чтобы отбирать признаки при регуляризации, надо обнулять веса у признаков, когда они становятся достаточно маленькими (меньше $\alpha$)
+После обычного шага по градиенту
+
+$$w_i := w_i - \lambda (\frac{\partial \text{MSE Loss}}{\partial w_i} +  \alpha \cdot \text{sign}(w_i) ) $$
+
+Просто обнуляем все веса достаточно маленькие веса
+
+\begin{equation}
+w_i := \begin{cases} 
+w_i & \text{if } | w_i | < \alpha \\
+0 & \text{otherwise}
+\end{cases}
+\end{equation}
+
+И тогда наш алгоритм будет отбирать признаки.
+
 :::
 
-→ формула для софт-трешолда
-
-нужно обеспечит постепенное уменьшение весов (отнимаем альфу)
-л2 тоже это может, для л1 это просто легче делается, потому что мы линейно добавку вычитаем 
-любой механизм распада весов позволяет отбирать признаки при модификации спуска
+Вот, собственно, и все. По большому счету, нам не обязательно даже L1 штраф добавлять, чтобы срезать лишние признаки.
 
 Попробуем?
 
@@ -206,7 +216,8 @@ class LinearRegressionTrueL1:
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.alpha = alpha  # regularization parameter
-        self.weights = np.random.randn(n_features, 1) * 0.001
+        # self.weights = np.random.randn(n_features, 1) * 0.001
+        self.weights = np.zeros((n_features,1))
         self.bias = 0
         self.loss_history = []
     
@@ -240,47 +251,50 @@ class LinearRegressionTrueL1:
 
     def predict(self, X):
         return X @ self.weights + self.bias
+
+model = LinearRegressionTrueL1(learning_rate=learning_rate, epochs=epochs, alpha=alpha, n_features=n_features)
+model.fit(X, y)
 ```
+
+::: {layout-ncol=2 .column-page}
 
 ```{python}
 
-model = LinearRegressionTrueL1(learning_rate=learning_rate, epochs=epochs, alpha=0.5, n_features=n_features)
-
-model.fit(X, y)
-
-weights_my = model.weights.reshape(-1)
-print(f"My {model} Weights:\n{weights_my}")
-print(f"len weights:{len(weights_my)}")
-print(f"number of non-zero weights:{sum(weights_my != 0.)}")
-
-
-plt.figure(figsize=(10, 5))
-# plt.stem(weights_lr, linefmt="b-", markerfmt="bo", basefmt=" ", label="Linear Regression")
-# plt.stem(weights_lasso, linefmt="r-", markerfmt="rs", basefmt=" ", label="Lasso Regression")
-plt.stem(weights_my, linefmt="g-", markerfmt="x", basefmt=" ", label="My Lasso")
-plt.xlabel("Feature index")
-plt.ylabel("Weight value")
-plt.title("Comparison of Weights: Linear Regression vs Lasso Regression")
-plt.legend()
-plt.grid(True)
+plt.plot(model.loss_history)
+plt.xlabel('Iteration')
+plt.ylabel('Mean Squared Error')
+plt.title('Loss Change Over Iterations')
 plt.show()
 
 ```
 
-Ура, получилось.
+
+```{python}
+
+y_pred = model.predict(X)
+
+plt.scatter(y, y_pred, color='blue', label='Predicted vs True')
+plt.plot([min(y), max(y)], [min(y), max(y)], color='red', linestyle='--', linewidth=2, label='Perfect Fit')
+plt.xlabel('True Values')
+plt.ylabel('Predicted Values')
+plt.title('Prediction Error vs True Values')
+plt.legend()
+plt.show()
+
+```
+
+:::
+
+Что у нас с весами новой модели?
+
+```{python}
+print(model.weights.flatten())
+```
+
+Все веса, кроме одного у значимого признака, обратились в ноль. То есть, ура, у нас таки получилось отобрать признаки.
 
 
-есть три нюанса:
-1. коэффициэнты стратуеют с нуля (для линейной модели можно)
-2. используется модификация градиентного спуска
-3. ?
-
-## заметки
-
-нулевые признаки будут оставаться в нуле
-больше шансов на нахождение локальных оптимумов?
-
-# Выводы
+# Итоги
 
 
 Мы разобрались, что под капотом у Л1 регуляризации довольно простая эвристика. Она работает на практике и действительно позволяет отбирать признаки.
@@ -292,178 +306,3 @@ plt.show()
 в принципе, спарсити можно обеспечить и другим пенальти, можно даже без учета значений весов
 (как только посчитать функцию потерь?)
 
-# Прочие объяснения
-
-<!-- 
-```{python}
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Generate the original meshgrid
-x = np.linspace(-2, 2, 800)
-y = np.linspace(-2, 2, 800)
-X, Y = np.meshgrid(x, y)
-
-# L1 norm
-Z1 = np.abs(X) + np.abs(Y)
-
-# L2 norm
-Z2 = np.sqrt(X**2 + Y**2)
-
-# Rotation angle in radians
-theta = np.pi * 0.25 
-
-# Rotate the coordinates
-X_rot = X * np.cos(theta) - Y * np.sin(theta)
-Y_rot = X * np.sin(theta) + Y * np.cos(theta)
-
-# MSE with target (a, b)
-a, b = 1, 0
-Z_mse_rot = (X_rot - a)**2 + (2*Y_rot - b)**2
-
-fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 6))
-
-# L1 contour plot
-ax1.contour(X, Y, Z1, levels=10)
-ax1.set_title('L1 Norm Contour Plot')
-ax1.set_xlabel('x')
-ax1.set_ylabel('y')
-ax1.axhline(0, color='black', linewidth=0.5)
-ax1.axvline(0, color='black', linewidth=0.5)
-ax1.grid(color='gray', linestyle='--', linewidth=0.5)
-
-# L2 contour plot
-ax2.contour(X, Y, Z2, levels=10)
-ax2.set_title('L2 Norm Contour Plot')
-ax2.set_xlabel('x')
-ax2.set_ylabel('y')
-ax2.axhline(0, color='black', linewidth=0.5)
-ax2.axvline(0, color='black', linewidth=0.5)
-ax2.grid(color='gray', linestyle='--', linewidth=0.5)
-
-# MSE contour plot
-ax3.contour(X, Y, Z_mse_rot, levels=10)
-ax3.set_title('MSE Contour Plot')
-ax3.set_xlabel('x')
-ax3.set_ylabel('y')
-ax3.axhline(0, color='black', linewidth=0.5)
-ax3.axvline(0, color='black', linewidth=0.5)
-ax3.grid(color='gray', linestyle='--', linewidth=0.5)
-
-plt.tight_layout()
-plt.show()
-
-plt.show()
-```
-
-```{python}
-fig, ax = plt.subplots(figsize=(8, 8))
-
-# L1 norm contour plot
-ax.contour(X, Y, Z1, levels=[1], colors='b', label='L1 Norm')
-
-# L2 norm contour plot
-ax.contour(X, Y, Z2, levels=[1], colors='g', label='L2 Norm')
-
-# MSE contour plot
-ax.contour(X, Y, Z_mse_rot, levels=[1], colors='r', label='MSE')
-
-ax.set_title('Contour Plots of L1, L2 Norms, and MSE')
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.axhline(0, color='black', linewidth=0.5)
-ax.axvline(0, color='black', linewidth=0.5)
-ax.grid(color='gray', linestyle='--', linewidth=0.5)
-ax.legend()
-
-plt.tight_layout()
-plt.show()
-
-```
-
-
-```{python}
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Generate the original meshgrid
-x = np.linspace(-2, 2, 800)
-y = np.linspace(-2, 2, 800)
-X, Y = np.meshgrid(x, y)
-
-# L1 norm
-Z1 = np.abs(X) + np.abs(Y)
-
-# L2 norm
-Z2 = np.sqrt(X**2 + Y**2)
-
-# Rotation angle in radians
-theta = np.pi * 0.25 
-
-# Rotate the coordinates
-X_rot = X * np.cos(theta) - Y * np.sin(theta)
-Y_rot = X * np.sin(theta) + Y * np.cos(theta)
-
-# MSE with target (a, b)
-a, b = 1, 0
-Z_mse_rot = (X_rot - a)**2 + (4*Y_rot - b)**2
-
-fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 6))
-
-# L1 contour plot
-ax1.contour(X, Y, Z1, levels=10)
-ax1.set_title('L1 Norm Contour Plot')
-ax1.set_xlabel('x')
-ax1.set_ylabel('y')
-ax1.axhline(0, color='black', linewidth=0.5)
-ax1.axvline(0, color='black', linewidth=0.5)
-ax1.grid(color='gray', linestyle='--', linewidth=0.5)
-
-# L2 contour plot
-ax2.contour(X, Y, Z2, levels=10)
-ax2.set_title('L2 Norm Contour Plot')
-ax2.set_xlabel('x')
-ax2.set_ylabel('y')
-ax2.axhline(0, color='black', linewidth=0.5)
-ax2.axvline(0, color='black', linewidth=0.5)
-ax2.grid(color='gray', linestyle='--', linewidth=0.5)
-
-# MSE contour plot
-ax3.contour(X, Y, Z_mse_rot, levels=10)
-ax3.set_title('MSE Contour Plot')
-ax3.set_xlabel('x')
-ax3.set_ylabel('y')
-ax3.axhline(0, color='black', linewidth=0.5)
-ax3.axvline(0, color='black', linewidth=0.5)
-ax3.grid(color='gray', linestyle='--', linewidth=0.5)
-
-plt.tight_layout()
-plt.show()
-
-plt.show()
-```
-
-```{python}
-fig, ax = plt.subplots(figsize=(8, 8))
-
-# L1 norm contour plot
-ax.contour(X, Y, Z1, levels=[1], colors='b', label='L1 Norm')
-
-# L2 norm contour plot
-ax.contour(X, Y, Z2, levels=[1], colors='g', label='L2 Norm')
-
-# MSE contour plot
-ax.contour(X, Y, Z_mse_rot, levels=[1], colors='r', label='MSE')
-
-ax.set_title('Contour Plots of L1, L2 Norms, and MSE')
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.axhline(0, color='black', linewidth=0.5)
-ax.axvline(0, color='black', linewidth=0.5)
-ax.grid(color='gray', linestyle='--', linewidth=0.5)
-ax.legend()
-
-plt.tight_layout()
-plt.show()
-
-``` -->
