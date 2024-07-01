@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "L1_explained.html",
+    "href": "L1_explained.html",
+    "title": "Под капотом L1 регуляризации",
+    "section": "",
+    "text": "L1 регуляризация умеет отбирать признаки. Это ее свойство почти повсеместно объясняют с помощью статистических рассуждений и варианта вот этой иллюстрации от создателей алгоритма:\n\n\n\nImage from Elements of Statistical Learning by Hastie, Tibshirani, and Friedman\n\n\nРазглядывая эту картинку, у меня и правда возникло смутное чувство интуитивного понимания. Но вот когда я попытался объяснить суть алголритма знакомому, эта интуиция куда-то улетучилась.\nПредлагаю вместе со мной разобраться, как L1 действительно отбирает признаки.\nДля наглядности мы будем регуляризовывать линейную регрессию со среднеквадратичной ошибкой (lasso regression).\nМои рассуждения можно пропустить и сразу прыгнуть до ключевой идеи."
+  },
+  {
+    "objectID": "L1_explained.html#результаты-обучения",
+    "href": "L1_explained.html#результаты-обучения",
+    "title": "Под капотом L1 регуляризации",
+    "section": "Результаты обучения",
+    "text": "Результаты обучения\nОбучение прошло без проблем, модель даже показывает приличные прогнозы.\n\nКод\nplt.plot(model.loss_history)\nplt.xlabel('Iteration')\nplt.ylabel('Loss')\nplt.title('Loss Change Over Iterations')\nplt.show()\ny_pred = model.predict(X)\n\nplt.scatter(y, y_pred, color='blue', label='Predicted vs True')\nplt.plot([min(y), max(y)], [min(y), max(y)], color='red', linestyle='--', linewidth=2, label='Perfect Fit')\nplt.xlabel('True Values')\nplt.ylabel('Predicted Values')\nplt.title('Predicted vs True Values')\nplt.legend()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nАлгоритм правильно выцепил релевантный признак и дал ему большой вес. Однако, ни один вес в ноль не обратился:\n\n\nКод\nprint(model.weights.flatten())\n\n\n[-0.0480011  -0.04580301  0.03685523 64.83100954 -0.05288193]\n\n\nОкей, обычный градиентный спуск веса не обнуляет. Как быть?"
+  },
+  {
+    "objectID": "random_generators.html",
+    "href": "random_generators.html",
+    "title": "website2",
+    "section": "",
+    "text": "опробовать материалы от кнута"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "website",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  }
+]
