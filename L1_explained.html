@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Под капотом L1 регуляризации – website2</title>
+<title>Под капотом L1 регуляризации – Заметки Алексея</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -142,7 +142,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">website2</span>
+    <span class="navbar-title">Заметки Алексея</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Поиск"></div>
@@ -254,7 +254,7 @@ window.Quarto = {
 <li>1 релевантный признак</li>
 <li>4 признака со случайным шумом</li>
 </ul>
-<div id="b8826bff" class="cell page-columns page-full" data-execution_count="1">
+<div id="11f3ba21" class="cell page-columns page-full" data-execution_count="1">
 <details class="code-fold">
 <summary>Код</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -289,7 +289,7 @@ window.Quarto = {
 </div>
 <p>Далее набросаем саму модель. Ее веса будем обновлять следующим образом:</p>
 <p><span class="math display">\[w_i := w_i - \lambda (\frac{\partial \text{MSE Loss}}{\partial w_i} +  \alpha \cdot \text{sign}(w_i) ) \]</span></p>
-<div id="c154046e" class="cell" data-execution_count="2">
+<div id="2ff9c56a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinearRegressionNaiveL1:</span>
@@ -354,7 +354,7 @@ window.Quarto = {
 </details>
 <div class="column-page quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
-<div id="4669276e" class="cell quarto-layout-cell" data-execution_count="3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="df8d7eec" class="cell quarto-layout-cell" data-execution_count="3" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -363,7 +363,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="3796efe9" class="cell quarto-layout-cell" data-execution_count="4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="cb89933d" class="cell quarto-layout-cell" data-execution_count="4" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -375,7 +375,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Алгоритм правильно выцепил релевантный признак и дал ему большой вес. Однако, ни один вес в ноль не обратился:</p>
-<div id="985802d1" class="cell" data-execution_count="5">
+<div id="c9fdc70e" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Код</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.weights.flatten())</span></code><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -415,7 +415,7 @@ w_i &amp; \text{if } | w_i | &lt; \alpha \\
 </div>
 <p>Вот, собственно, и все. По большому счету, нам не обязательно даже L1 штраф добавлять, чтобы срезать лишние признаки.</p>
 <p>Попробуем?</p>
-<div id="7f201dae" class="cell" data-execution_count="6">
+<div id="783785ec" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinearRegressionTrueL1:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, learning_rate, epochs, alpha, n_features):</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.learning_rate <span class="op">=</span> learning_rate</span>
@@ -479,7 +479,7 @@ w_i &amp; \text{if } | w_i | &lt; \alpha \\
 </details>
 <div class="column-page quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
-<div id="c52bb219" class="cell quarto-layout-cell" data-execution_count="7" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="aa41e3b2" class="cell quarto-layout-cell" data-execution_count="7" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -488,7 +488,7 @@ w_i &amp; \text{if } | w_i | &lt; \alpha \\
 </div>
 </div>
 </div>
-<div id="4a091528" class="cell quarto-layout-cell" data-execution_count="8" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="8b82ce61" class="cell quarto-layout-cell" data-execution_count="8" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -500,7 +500,7 @@ w_i &amp; \text{if } | w_i | &lt; \alpha \\
 </div>
 </div>
 <p>Что у нас с весами новой модели?</p>
-<div id="40edc76e" class="cell" data-execution_count="9">
+<div id="162097c7" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Код</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.weights.flatten())</span></code><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></pre></div>
