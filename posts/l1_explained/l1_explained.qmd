@@ -1,7 +1,11 @@
 ---
 title: "Под капотом L1 регуляризации"
 subtitle: "Почему она отбирает признаки?"
-date: "now"
+date: "2024-07-01"
+# categories: [news, code, analysis]
+# image: "l1_fig.jpg"
+
+
 lang: ru
 toc: true
 format:
@@ -9,8 +13,8 @@ format:
   html:
     code-fold: true
 jupyter: python3
-execute:
-  eval: true
+# execute:
+#   eval: true
 #   freeze: auto
 ---
 
