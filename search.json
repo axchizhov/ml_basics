@@ -1,24 +1,10 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this blog"
-  },
-  {
-    "objectID": "random_generators.html",
-    "href": "random_generators.html",
+    "objectID": "index.html",
+    "href": "index.html",
     "title": "Заметки",
     "section": "",
-    "text": "опробовать материалы от кнута"
-  },
-  {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code."
+    "text": "Под капотом L1 регуляризации\n\n\nПочему она отбирает признаки?\n\n\n\n\n\n\n\n\nJul 1, 2024\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/l1_explained/l1_explained.html",
@@ -35,10 +21,10 @@
     "text": "Результаты обучения\nОбучение прошло без проблем, модель даже показывает приличные прогнозы.\n\nКод\nplt.plot(model.loss_history)\nplt.xlabel('Iteration')\nplt.ylabel('Loss')\nplt.title('Loss Change Over Iterations')\nplt.show()\ny_pred = model.predict(X)\n\nplt.scatter(y, y_pred, color='blue', label='Predicted vs True')\nplt.plot([min(y), max(y)], [min(y), max(y)], color='red', linestyle='--', linewidth=2, label='Perfect Fit')\nplt.xlabel('True Values')\nplt.ylabel('Predicted Values')\nplt.title('Predicted vs True Values')\nplt.legend()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nАлгоритм правильно выцепил релевантный признак и дал ему большой вес. Однако, ни один вес в ноль не обратился:\n\n\nКод\nprint(model.weights.flatten())\n\n\n[-0.0480011  -0.04580301  0.03685523 64.83100954 -0.05288193]\n\n\nОкей, обычный градиентный спуск веса не обнуляет. Как быть?"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
+    "objectID": "random_generators.html",
+    "href": "random_generators.html",
     "title": "Заметки",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\n\n\n\n\n\nJul 1, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nПод капотом L1 регуляризации\n\n\nПочему она отбирает признаки?\n\n\n\n\n\n\n\n\nJul 1, 2024\n\n\n\n\n\n\nNo matching items"
+    "text": "опробовать материалы от кнута"
   }
 ]
