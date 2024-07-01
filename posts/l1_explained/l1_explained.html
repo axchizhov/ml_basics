@@ -251,7 +251,7 @@ window.Quarto = {
 <li>1 релевантный признак</li>
 <li>4 признака со случайным шумом</li>
 </ul>
-<div id="a9ecfda1" class="cell page-columns page-full" data-execution_count="1">
+<div id="b077dca0" class="cell page-columns page-full" data-execution_count="1">
 <details class="code-fold">
 <summary>Код</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -279,14 +279,14 @@ window.Quarto = {
 <div class="cell-output cell-output-display page-columns page-full">
 <div class="page-columns page-full">
 <figure class="figure page-columns page-full">
-<p class="page-columns page-full"><img src="L1_explained_files/figure-html/cell-2-output-1.png" width="1179" height="238" class="figure-img column-body-outset"></p>
+<p class="page-columns page-full"><img src="l1_explained_files/figure-html/cell-2-output-1.png" width="1179" height="238" class="figure-img column-body-outset"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Далее набросаем саму модель. Ее веса будем обновлять следующим образом:</p>
 <p><span class="math display">\[w_i := w_i - \lambda (\frac{\partial \text{MSE Loss}}{\partial w_i} +  \alpha \cdot \text{sign}(w_i) ) \]</span></p>
-<div id="815ba843" class="cell" data-execution_count="2">
+<div id="69b45221" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinearRegressionNaiveL1:</span>
@@ -351,20 +351,20 @@ window.Quarto = {
 </details>
 <div class="column-page quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
-<div id="c180cc23" class="cell quarto-layout-cell" data-execution_count="3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="e1fab61d" class="cell quarto-layout-cell" data-execution_count="3" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="L1_explained_files/figure-html/cell-4-output-1.png" width="605" height="455" class="figure-img"></p>
+<p><img src="l1_explained_files/figure-html/cell-4-output-1.png" width="605" height="455" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="e85ad71c" class="cell quarto-layout-cell" data-execution_count="4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="d484fd76" class="cell quarto-layout-cell" data-execution_count="4" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="L1_explained_files/figure-html/cell-5-output-1.png" width="606" height="455" class="figure-img"></p>
+<p><img src="l1_explained_files/figure-html/cell-5-output-1.png" width="606" height="455" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -372,7 +372,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Алгоритм правильно выцепил релевантный признак и дал ему большой вес. Однако, ни один вес в ноль не обратился:</p>
-<div id="4ca41274" class="cell" data-execution_count="5">
+<div id="e59379ed" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Код</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.weights.flatten())</span></code><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -412,7 +412,7 @@ w_i &amp; \text{if } | w_i | &lt; \alpha \\
 </div>
 <p>Вот, собственно, и все. По большому счету, нам не обязательно даже L1 штраф добавлять, чтобы срезать лишние признаки.</p>
 <p>Попробуем?</p>
-<div id="7faea6e4" class="cell" data-execution_count="6">
+<div id="0171be6e" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinearRegressionTrueL1:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, learning_rate, epochs, alpha, n_features):</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.learning_rate <span class="op">=</span> learning_rate</span>
@@ -476,20 +476,20 @@ w_i &amp; \text{if } | w_i | &lt; \alpha \\
 </details>
 <div class="column-page quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
-<div id="ec9219bb" class="cell quarto-layout-cell" data-execution_count="7" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="892a5935" class="cell quarto-layout-cell" data-execution_count="7" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="L1_explained_files/figure-html/cell-8-output-1.png" width="605" height="455" class="figure-img"></p>
+<p><img src="l1_explained_files/figure-html/cell-8-output-1.png" width="605" height="455" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="b0c5a8d7" class="cell quarto-layout-cell" data-execution_count="8" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="7f21afa3" class="cell quarto-layout-cell" data-execution_count="8" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="L1_explained_files/figure-html/cell-9-output-1.png" width="606" height="455" class="figure-img"></p>
+<p><img src="l1_explained_files/figure-html/cell-9-output-1.png" width="606" height="455" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -497,7 +497,7 @@ w_i &amp; \text{if } | w_i | &lt; \alpha \\
 </div>
 </div>
 <p>Что у нас с весами новой модели?</p>
-<div id="4447aa92" class="cell" data-execution_count="9">
+<div id="98265482" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Код</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.weights.flatten())</span></code><button title="Скопировать текст" class="code-copy-button"><i class="bi"></i></button></pre></div>
