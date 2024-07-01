@@ -2,11 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://axchizhov.github.io/ml_basics/about.html</loc>
-    <lastmod>2024-07-01T10:44:36.727Z</lastmod>
+    <lastmod>2024-07-01T11:06:46.557Z</lastmod>
   </url>
   <url>
     <loc>https://axchizhov.github.io/ml_basics/L1_explained.html</loc>
     <lastmod>2024-06-28T02:32:29.636Z</lastmod>
+  </url>
+  <url>
+    <loc>https://axchizhov.github.io/ml_basics/posts/welcome/index.html</loc>
+    <lastmod>2024-07-01T11:05:46.608Z</lastmod>
+  </url>
+  <url>
+    <loc>https://axchizhov.github.io/ml_basics/posts/post-with-code/index.html</loc>
+    <lastmod>2024-07-01T11:05:46.610Z</lastmod>
   </url>
   <url>
     <loc>https://axchizhov.github.io/ml_basics/random_generators.html</loc>
@@ -14,6 +22,6 @@
   </url>
   <url>
     <loc>https://axchizhov.github.io/ml_basics/index.html</loc>
-    <lastmod>2024-07-01T10:54:18.584Z</lastmod>
+    <lastmod>2024-07-01T11:06:34.369Z</lastmod>
   </url>
 </urlset>
