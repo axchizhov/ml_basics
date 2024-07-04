@@ -1,3 +1,9 @@
+Развернуть:
+
+```
+uv pip install -r requirements.in
+```
+
 Опубликоваться:
 
 ```
