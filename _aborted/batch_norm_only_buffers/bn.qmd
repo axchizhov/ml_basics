@@ -1,0 +1,81 @@
+---
+title: "О нюансе Batch Norm"
+# subtitle: ""
+date: "now"
+
+lang: ru
+toc: true
+format:
+  # ipynb: default
+  html:
+    code-fold: true
+jupyter: python3
+# execute:
+#   eval: true
+#   freeze: auto
+---
+
+# Итоги → гипотеза не подтвердилась
+
+модель со случайным последним слоем:
+
+val Loss: 0.8846 Acc: 0.5556
+
+модель со случайным  слоем и обновленными буфферами:
+
+Epoch 0/24
+----------
+val Loss: 0.7879 Acc: 0.5490
+
+Epoch 1/24
+----------
+val Loss: 0.7696 Acc: 0.5556
+
+Epoch 2/24
+----------
+val Loss: 0.7933 Acc: 0.5490
+
+Epoch 3/24
+----------
+val Loss: 0.7837 Acc: 0.5556
+
+Epoch 4/24
+----------
+val Loss: 0.8310 Acc: 0.5490
+
+Вывод: на качестве не сказывается особо
+
+(хотя на цифар→мнист помогло. вероятно, при очень разных доменах и простом датасете работает чуть получше)
+
+
+<!-- 
+
+# Введение
+
+Батч-нормализация (batch norm, BN, БН) потихоньку вытесняется лейер-нормализацией (layer norm, LN, ЛН)
+
+![trends](trends.png)
+
+в NLP задачах изначально LN
+в CV — batch norm
+
+A ConvNet for the 2020s → обе нормализации показывают плюс минус одинковые результаты для изображений → проверить
+https://arxiv.org/abs/2201.03545
+
+
+ЛН проще реализуется и 
+
+
+у БН есть нюанс — обсудим его, вдруг пригодится
+
+
+# Эксперимент
+
+- [ ] Прогнать туториал https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
+- [ ] прогнать туториал без обучения батчей
+
+
+# Доп литра
+
+Training BatchNorm and Only BatchNorm: On the Expressive Power of Random Features in CNNs
+https://arxiv.org/abs/2003.00152 -->

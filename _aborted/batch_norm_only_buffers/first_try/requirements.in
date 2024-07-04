@@ -1,0 +1,11 @@
+torch
+torchvision
+datasets
+# scikit-learn
+
+#dev
+notebook
+ipywidgets
+matplotlib
+tqdm
+
